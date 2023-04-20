@@ -1,0 +1,89 @@
+\documentclass{article}
+
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{calc,pict2e,picture}
+\usepackage{textgreek,textcomp,gensymb,stix}
+
+\title{Test Plan}
+\begin{document}
+  \maketitle
+
+  \section*{Description}
+The Signaler project calculates prime numbers in increasing order and outputs one number per second.
+
+  \section*{Automated Test Cases}
+  Automated  tests  may  be  executed  with  make check.  This  will  both  build  the  tests  and  run  them.  These
+are all unit tests of functions.
+
+  \section*{Common Test Cases}
+  Prerequisites: Signlaer Directory does not already exist
+  \subsection*{TC1: Installation}
+  1. git clone git@git.umbc.tc:tdqc/tdqc12/rsoto/signaler.git\\
+  2. cd Signaler\\
+	Expected: signaler directory is created\\
+  \\Prerequisites: In the projects directory
+  \subsection*{TC2: Correct branch}
+  1. git branch\\
+Expected: main is default branch\\
+  \subsection*{TC3: Build Cleaning}
+  1. make\\
+2. make clean\\
+3. ls *.o\\
+Expected: No such file or directory error\\
+  \\Prerequisites: signaler Directory does not already exist
+  \section*{"Project" Test Cases}
+  Prerequisites: In the projects directory; make clean
+  \subsection*{TC4: Build Explicit}
+1. make signaler\\
+2. ls signaler\\
+Expected: file is listed\\
+
+\subsection*{TC5: Build Implicit}
+1. make\\
+2. ls signaler\\
+Expected: file is listed\\
+\subsection*{TC6: Build Debugging}
+1. make debug\\
+2. readelf --debug-dump=decodedline signaler\\
+Expected: debugging info is listed\\
+\subsection*{TC7: Build Cleaning}
+1. make\\
+2. make clean\\
+3. ls signaler\\
+Expected: No such file or directory error\\
+\\
+Prerequisites: In the project's directory; make\\
+\subsection*{TC8: No command line arguments}
+1. ./signaler\\
+2. echo \$?\\
+Expected: program exits with proper output \\
+\subsection*{TC9: with command line arguments}
+1. ./signaler arguments\\
+2. echo \$?\\
+Expected: program exits with usage error\\
+\subsection*{TC10: with s flag set}
+1. ./signaler -s num\\
+2. echo \$?\\
+Expected: program exits with proper output and started at value num instead of 2\\
+\subsection*{TC11: with r flag set}
+1. ./signaler -r\\
+2. echo \$?\\
+Expected: program exits with proper output in reverse\\
+\subsection*{TC12: with e flag set}
+1. ./signaler -e num\\
+2. echo \$?\\
+Expected: program exits with proper output and ends when num value is surpassed\\
+\subsection*{TC13: with t flag set}
+1. ./signaler -t num\\
+2. echo \$?\\
+Expected: program exits with proper output with each number output in num intervals\\
+\\
+
+
+
+\end{document}
+
+
+
+

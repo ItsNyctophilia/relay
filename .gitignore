@@ -1,0 +1,7 @@
+*.o
+signaler
+.vscode/*
+*.txt
+test/test_all
+.idea
+.idea/*
