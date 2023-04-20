@@ -1,7 +1,3 @@
-//
-// Created by user on 4/20/23.
-//
-
 #ifndef RELAY_PARSE_ARGS_H
 #define RELAY_PARSE_ARGS_H
 #include "../common.h"
@@ -15,4 +11,4 @@
  */
 int parse_command_line(int argc, char **argv[], struct app *app);
 
-#endif //RELAY_PARSE_ARGS_H
+#endif				//RELAY_PARSE_ARGS_H

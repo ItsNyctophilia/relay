@@ -8,22 +8,22 @@
 #include <stdio.h>
 
 enum {
-    SUCCESS,
-    FAILURE,
-    SIGNAL_SET_ERROR,
-    SIGNAL_CHANGE_ERROR
+	SUCCESS,
+	FAILURE,
+	SIGNAL_SET_ERROR,
+	SIGNAL_CHANGE_ERROR
 };
 
 struct app {
-    bool no_buffer;
-    long limit;
-    int clients;
+	bool no_buffer;
+	long limit;
+	int clients;
 };
 
 struct msg {
-    char *data;
-    size_t size;
-    int code;
+	char *data;
+	size_t size;
+	int code;
 };
 
-#endif //RELAY_D_COMMON_H
+#endif				//RELAY_D_COMMON_H

@@ -15,7 +15,7 @@
  * @param siginfo_t info
  * @param void *context
  */
-void sig_handler(int signal, siginfo_t *info, void *context);
+void sig_handler(int signal, siginfo_t * info, void *context);
 
 /**
  * @brief Set the signals object
@@ -25,4 +25,4 @@ void sig_handler(int signal, siginfo_t *info, void *context);
  */
 int set_signals(struct sigaction *action);
 
-#endif //RELAY_SIGNAL_HDLR_H
+#endif				//RELAY_SIGNAL_HDLR_H

@@ -9,49 +9,49 @@ ssize_t prime_idx = 0;
 
 static int set_signal_catch(int signal, struct sigaction action)
 {
-    int err = sigaction(signal, &action, NULL);
-    if (err < 0) {
-        perror("Unable to change signal");
-        return SIGNAL_CHANGE_ERROR;
-    }
+	int err = sigaction(signal, &action, NULL);
+	if (err < 0) {
+		perror("Unable to change signal");
+		return SIGNAL_CHANGE_ERROR;
+	}
 
-    return SUCCESS;
+	return SUCCESS;
 }
 
-void sig_handler(int signal, siginfo_t *info, void *context)
+void sig_handler(int signal, siginfo_t * info, void *context)
 {
-    (void)info;
-    (void)context;
-    switch(signal) {
-        case SIGHUP:
-            puts("SIGHUP received");
-            break;
-        case SIGQUIT:
-            puts("SIGQUIT received");
-            break;
-        case SIGTERM:
-            puts("SIGSTOP received");
-            break;
-        case SIGINT:
-            puts("SIGINT received");
-            break;
-        case '?':
-            fprintf(stderr, "Something went wrong\n");
-    }
+	(void)info;
+	(void)context;
+	switch (signal) {
+	case SIGHUP:
+		puts("SIGHUP received");
+		break;
+	case SIGQUIT:
+		puts("SIGQUIT received");
+		break;
+	case SIGTERM:
+		puts("SIGSTOP received");
+		break;
+	case SIGINT:
+		puts("SIGINT received");
+		break;
+	case '?':
+		fprintf(stderr, "Something went wrong\n");
+	}
 }
 
 int set_signals(struct sigaction *action)
 {
-    enum{
-        SIGNAL_SZ = 4
-    };
-    int signals[SIGNAL_SZ] = {SIGHUP, SIGQUIT, SIGTERM, SIGINT};
-    int err;
-    for (int i = 0; i < SIGNAL_SZ; ++i){
-        err = set_signal_catch(signals[i], *action);
-        if (err) {
-            return err;
-        }
-    }
-    return SUCCESS;
+	enum {
+		SIGNAL_SZ = 4
+	};
+	int signals[SIGNAL_SZ] = { SIGHUP, SIGQUIT, SIGTERM, SIGINT };
+	int err;
+	for (int i = 0; i < SIGNAL_SZ; ++i) {
+		err = set_signal_catch(signals[i], *action);
+		if (err) {
+			return err;
+		}
+	}
+	return SUCCESS;
 }
