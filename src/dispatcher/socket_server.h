@@ -20,6 +20,7 @@ enum {
     BIND_FAIL,
     SOCKET_CREATE_FAIL,
     LISTEN_FAIL,
+    UNLINK_FAIL,
 };
 
 struct socket_server {

@@ -18,6 +18,7 @@ struct socket_server *create_server(int *err)
     struct socket_server *server = calloc(1, sizeof(*server));
     if (server == NULL) {
         perror("Failed to allocate memory for server");
+        *err = MEMORY_ALLOCATION_ERROR;
         return NULL;
     }
 
@@ -37,7 +38,7 @@ struct socket_server *create_server(int *err)
         // file exists
         if (unlink(server->pathname) < 0) {
             perror("Failed to unlink socket file");
-            *err = SOCKET_CREATE_FAIL;
+            *err = UNLINK_FAIL;
             return NULL;
         }
     }
