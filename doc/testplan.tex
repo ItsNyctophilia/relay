@@ -1,27 +1,27 @@
 \documentclass{article}
 
-\usepackage{hyperref}
-\usepackage{multicol}
-\usepackage{calc,pict2e,picture}
-\usepackage{textgreek,textcomp,gensymb,stix}
-
 \title{Test Plan}
+\author{SPC James Viner, SPC Jeremy Carter, CW2 Richard Soto}
+\date{Thursday, April 20, 2023}
 \begin{document}
   \maketitle
 
   \section*{Description}
-The Signaler project calculates prime numbers in increasing order and outputs one number per second.
+A pair of programs, a dispatcher and a listener, will act as a communication relay.
+  The program dispatcher passively accepts text from standard input, exiting normally on EOF.
+  The program listener will print out any text that was sent to a running instance of dispatcher. When
+  dispatcher exits, so too does listener.
 
   \section*{Automated Test Cases}
   Automated  tests  may  be  executed  with  make check.  This  will  both  build  the  tests  and  run  them.  These
 are all unit tests of functions.
 
   \section*{Common Test Cases}
-  Prerequisites: Signlaer Directory does not already exist
+  Prerequisites: relay directory does not already exist
   \subsection*{TC1: Installation}
-  1. git clone git@git.umbc.tc:tdqc/tdqc12/rsoto/signaler.git\\
-  2. cd Signaler\\
-	Expected: signaler directory is created\\
+  1. git clone git@git.umbc.tc:tdqc/tdqc12/rsoto/relay.git\\
+  2. cd relay\\
+	Expected: relay directory is created\\
   \\Prerequisites: In the projects directory
   \subsection*{TC2: Correct branch}
   1. git branch\\
@@ -31,56 +31,50 @@ Expected: main is default branch\\
 2. make clean\\
 3. ls *.o\\
 Expected: No such file or directory error\\
-  \\Prerequisites: signaler Directory does not already exist
+  \\Prerequisites: relay directory does not already exist
   \section*{"Project" Test Cases}
   Prerequisites: In the projects directory; make clean
   \subsection*{TC4: Build Explicit}
-1. make signaler\\
-2. ls signaler\\
+1. make dispatcher OR make listener\\
+2. ls dispatcher OR ls listener\\
 Expected: file is listed\\
 
 \subsection*{TC5: Build Implicit}
 1. make\\
-2. ls signaler\\
+2. ls dispatcher\\
+3. ls listener\\
 Expected: file is listed\\
 \subsection*{TC6: Build Debugging}
 1. make debug\\
-2. readelf --debug-dump=decodedline signaler\\
+2. readelf --debug-dump=decodedline dispatcher\\
+3. readelf --debug-dump=decodedline listener
 Expected: debugging info is listed\\
 \subsection*{TC7: Build Cleaning}
 1. make\\
 2. make clean\\
-3. ls signaler\\
+3. ls dispatcher\\
+4. ls listener
 Expected: No such file or directory error\\
 \\
 Prerequisites: In the project's directory; make\\
 \subsection*{TC8: No command line arguments}
-1. ./signaler\\
+1. ./dispatcher\\
 2. echo \$?\\
+3. ./listener\\
+4. echo \$?\\
 Expected: program exits with proper output \\
 \subsection*{TC9: with command line arguments}
-1. ./signaler arguments\\
+1. ./dispatcher arguments\\
 2. echo \$?\\
 Expected: program exits with usage error\\
-\subsection*{TC10: with s flag set}
-1. ./signaler -s num\\
+\subsection*{TC10: with l flag set}
+1. ./dispatcher -l num\\
 2. echo \$?\\
-Expected: program exits with proper output and started at value num instead of 2\\
-\subsection*{TC11: with r flag set}
-1. ./signaler -r\\
+Expected: program exits with proper output and sets the limit for connections\\
+\subsection*{TC11: with b flag set}
+1. ./dispatcher -b\\
 2. echo \$?\\
-Expected: program exits with proper output in reverse\\
-\subsection*{TC12: with e flag set}
-1. ./signaler -e num\\
-2. echo \$?\\
-Expected: program exits with proper output and ends when num value is surpassed\\
-\subsection*{TC13: with t flag set}
-1. ./signaler -t num\\
-2. echo \$?\\
-Expected: program exits with proper output with each number output in num intervals\\
-\\
-
-
+Expected: Program reads from stdin without buffering by line\\
 
 \end{document}
 
