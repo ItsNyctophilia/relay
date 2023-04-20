@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{calc,pict2e,picture}
+\usepackage{textgreek,textcomp,gensymb,stix}
+\title{Design Plan}
+\begin{document}
+  \maketitle
+  \section*{Project Summary}
+  The Signaler program calculates increasing prime numbers and then outputs one number every second. 
+  \section*{Features Targeted}
+  \subsection*{Man Page}
+  Make a sample man page for the program that explains how it works and any errors it may return.
+  \subsection*{LaTeX Design Plan/Write Up}
+  Have the Project write up and design plan in LaTeX code.
+  \subsection*{-s flag}
+  Start at number after flag is set instead of after 2.
+  \subsection*{-r flag}
+  Program runs in reverse where numbers output are counting down instead of up. 
+  \subsection*{-e flag}
+  The program exits once the next prime number to be output is past the number following the -e flag.
+  \subsection*{-t flag}
+  The number following the -t flag tells the program how many seconds are between outputs.
+  \section*{Architecture}
+  \subsection*{Data}
+Two struct will be used; one for the flags on the command line and one for the array of prime number and two counters for iterating through the array.\\
+struct app{\\
+\qquad uint64\_t start\_val\\
+\qquad uint64\_t end\_val\\
+\qquad uint32\_t sec\_val\\
+\qquad bool reverse\\
+}
+struct prime\_{\\
+\qquad char *primes\\
+\qquad long prime\_counter\\
+\qquad long index\_counter\\
+}
+  \subsection*{Significant Functions}
+  bool calc\_prime(struct prime *p)\\
+  \qquad This function will calculate prime numbers.\\
+  void output\_prime(struct prime *p)\\
+  \qquad This function will output prime numbers.\\
+  void set\_flags(struct app *a)\\
+  \qquad These functions will set the flags that are present.\\
+  void signal\_handler()\\
+  \qquad This function will handle any signals that are sent to the program.\\
+  \section*{Plan}
+  The plan for this project is to start with being able to calculate any prime numbers and add them to an array *primes. After each second, the program will output one prime number from the array. This will go on until the correct signal is received by the program to exit.
+  \section*{User Interface}
+Uses the CLI. The user will initiate the program with no flags/one flag/multiple flags. The program will not end until the proper signal is sent by the user to the program. 
+\\
+\\
+\end{document}
+
