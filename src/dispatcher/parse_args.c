@@ -1,5 +1,5 @@
 #include "parse_args.h"
-#include "d_common.h"
+#include "../common.h"
 #include <getopt.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -40,20 +40,26 @@ int parse_command_line(int argc, char **argv[], struct app *app)
                     char *endptr;
                     app->limit = strtol(optarg, &endptr, 10);
                     if (*endptr != '\0') {
-                        fprintf(stderr, "Invalid limit value (%s)\n", endptr);
+                        fprintf(stderr, "Invalid limit value '%s', numerical required!\n", endptr);
+                        print_help();
                         return FAILURE;
                     }
                     if (app->limit < 1) {
-                        fprintf(stderr, "Limit must be greater than 1\n");
+                        fprintf(stderr, "Limit must be greater than 1!\n");
+                        print_help();
                         return FAILURE;
                     }
+                } else {
+                    fprintf(stderr, "Limit value is missing!\n");
+                    return FAILURE;
                 }
                 break;
             case 'h':
                 print_help();
                 return FAILURE;
             case '?':
-                fprintf(stderr, "Something went wrong\n");
+                fprintf(stderr, "Improper usage!\n");
+                print_help();
         }
     }
     return SUCCESS;

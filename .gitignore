@@ -1,5 +1,6 @@
 *.o
-signaler
+listener
+dispatcher
 .vscode/*
 *.txt
 test/test_all

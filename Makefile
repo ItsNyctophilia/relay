@@ -5,9 +5,9 @@ CFLAGS += -Wvla -Wwrite-strings -Wfloat-equal
 
 CPP_FLAGS += _XOPEN_SOURCE
 
-CMN_OBJS += obj/signal_handler.o obj/prime_calc.o obj/prime_thread.o
-CMN_OBJS += obj/common.o obj/list_array.o
-D_OBJS = obj/dispatcher.o $(CMN_OBJS)
+L_CMN_OBJS +=
+D_CMN_OBJS += obj/parse_args.o
+D_OBJS = obj/dispatcher.o $(D_CMN_OBJS)
 L_OBJS = obj/listener.o $(CMN_OBJS)
 
 all: dispatcher listener

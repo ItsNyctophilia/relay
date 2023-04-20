@@ -4,7 +4,7 @@
 
 #ifndef RELAY_PARSE_ARGS_H
 #define RELAY_PARSE_ARGS_H
-#include "d_common.h"
+#include "../common.h"
 
 /**
  * Parse command line arguments
