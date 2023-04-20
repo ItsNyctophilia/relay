@@ -5,10 +5,12 @@ CFLAGS += -Wvla -Wwrite-strings -Wfloat-equal
 
 CPP_FLAGS += _XOPEN_SOURCE
 
-L_CMN_OBJS +=
-D_CMN_OBJS += obj/parse_args.o
-D_OBJS = obj/dispatcher.o $(D_CMN_OBJS)
-L_OBJS = obj/listener.o $(CMN_OBJS)
+L_XTRA_OBJS +=
+D_XTRA_OBJS += obj/parse_args.o
+CMN_OBJS = obj/signal_hdlr.o
+
+D_OBJS = obj/dispatcher.o $(D_XTRA_OBJS) $(CMN_OBJS)
+L_OBJS = obj/listener.o $(L_XTRA_OBJS) $(CMN_OBJS)
 
 all: dispatcher listener
 
@@ -21,6 +23,9 @@ listener: $(L_OBJS)
 	$(CC) $(CFLAGS) $(L_OBJS) $(LDLIBS) -o $@
 
 obj/%.o : src/*/%.c
+	$(CC) $(CFLAGS) $(LDLIBS) -c $< -o $@
+
+obj/%.o : src/%.c
 	$(CC) $(CFLAGS) $(LDLIBS) -c $< -o $@
 
 #obj/%.o : test/%.c

@@ -9,7 +9,9 @@
 
 enum {
     SUCCESS,
-    FAILURE
+    FAILURE,
+    SIGNAL_SET_ERROR,
+    SIGNAL_CHANGE_ERROR
 };
 
 struct app {
