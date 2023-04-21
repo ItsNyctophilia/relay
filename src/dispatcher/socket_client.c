@@ -23,12 +23,11 @@ mtx_t lock;
 
 bool message_ready = false;
 char buffer[BUFSIZ];
-struct pollfd input = { .fd = 0, .events = POLLIN };
+
+
 
 static void cleanup_threads(struct thread_pool *trds, thrd_t input, thrd_t conn) {
-        puts("Cleaning up threads");
         for (size_t n = 0; n < trds->thrd_sz; ++n) {
-                printf("Loop ID: %ld\n", n);
                 if (trds->threads[n]) {
 
                         thrd_join(trds->threads[n], NULL);
@@ -41,31 +40,34 @@ static void cleanup_threads(struct thread_pool *trds, thrd_t input, thrd_t conn)
                 free(trds->thread_fds);
         }
         if (input){
-                puts("Joining input thread");
                 thrd_join(input, NULL);
         }
         if (conn){
-                puts("Joining connection thread");
                 thrd_join(conn, NULL);
         }
         //free(buffer);
 }
 
-static struct client_data *create_client(int sd)
+static struct client_data *create_client(int sd, int *rtn)
 {
-        if (!break_loop){
+        struct pollfd input = { .fd = sd, .events = POLLIN };
+        int result = poll(&input, 1,  500);
+        if (result == 0) {
+                *rtn = NTS;
                 return NULL;
         }
 	struct client_data *client = calloc(1, sizeof(*client));
 	if (client == NULL) {
 		perror("Failed to allocate memory for client");
-		return NULL;
+		*rtn = MEMORY_ALLOCATION_ERROR;
+        return NULL;
 	}
 	client->client_sz = sizeof(client->client_strg);
 
+
     client->client_socket =
-            accept(sd, (struct sockaddr *)&client->client_strg,
-                   &client->client_sz);
+                    accept(sd, (struct sockaddr *)&client->client_strg,
+                           &client->client_sz);
 
     if (client->client_socket == -1) {
         perror("Failed to accept client");
@@ -73,6 +75,7 @@ static struct client_data *create_client(int sd)
         return NULL;
     }
     client->ptr.sd = client->client_socket;
+    *rtn = CLIENT_SUCCESS;
 	return client;
 }
 
@@ -109,7 +112,6 @@ int handle_client(void *handle)
 	while (break_loop) {
 
 	}
-    puts("Client handle thread exiting");
     strcpy(buffer, "\07");
     write(client.sd, buffer, BUFSIZ - 1);
 
@@ -121,16 +123,12 @@ static int input_thread_func(void *arg)
 {
         union thread_ptr trd = {.ptr = arg };
         struct thread_pool *trds = trd.tp;
-        //size_t sz = BUFSIZ;
+        struct pollfd input = { .fd = 0, .events = POLLIN };
         while (break_loop) {
                 int result = poll(&input, 1,  500);
                 if (input.revents & POLLIN) {
-                        puts("Input ready");
                         fgets(buffer, BUFSIZ - 1, stdin);
-                        puts(buffer);
-                        //buffer[amount] = '\0';
                         for (size_t n = 0; n < trds->thrd_sz; ++n) {
-                                printf("THREAD ID: %zu\n", n);
                                 ssize_t amount = write(trds->thread_fds[n], buffer, strlen(buffer));
                                 if (amount < 0 && errno != EAGAIN) {
                                         perror("Unable to read from client");
@@ -139,10 +137,7 @@ static int input_thread_func(void *arg)
                                 }
                         }
                 }
-
-
         }
-        puts("Input thread exiting");
         return SUCCESS;
 }
 
@@ -151,13 +146,15 @@ static int connection_thread_func(void *arg)
         union thread_ptr trd = {.ptr = arg };
         struct thread_pool *trds = trd.tp;
         while (break_loop) {
-                puts("Creating client");
-                struct client_data *c_data = create_client(trd.tp->sd);
-                puts("Created client");
-                if (!c_data) {
-                        perror("Unable to create client");
+                int rtn;
+                struct client_data *c_data = create_client(trd.tp->sd, &rtn);
+                if (rtn == MEMORY_ALLOCATION_ERROR) {
+                        perror("Unable to create client!!");
                         return CLIENT_CREATE_FAIL;
+                } else if (rtn == NTS){
+                        continue;
                 }
+
                 trds->thread_fds[trds->thrd_sz] = c_data->client_socket;
                 int err =
                         thrd_create(&trds->threads[trds->thrd_sz++], handle_client,
@@ -184,19 +181,11 @@ static int connection_thread_func(void *arg)
                         trds->thrd_cap *= 2;
 		        }
         }
-        puts("Connection thread exiting");
         return SUCCESS;
 }
 
 int start_client_loop(int sd)
 {
-//        int std_in = fileno(stdin);
-//        int flags = fcntl(std_in, F_GETFL);
-//        int err = fcntl(std_in, F_SETFL, flags | O_NONBLOCK);
-//        if (err < 0) {
-//                perror("Unable to set IO to nonblocking");
-//                return NON_BLOCKING_ERROR;
-//        }
 
         struct thread_pool trds = { 0 };
         trds.sd = sd;
@@ -232,7 +221,6 @@ int start_client_loop(int sd)
 
         }
         cleanup_threads(&trds, input_thread, connection_thread);
-        puts("Exiting client loop");
 
 	    return err;
 }

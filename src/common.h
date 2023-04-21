@@ -19,6 +19,7 @@ enum {
     THREAD_CREATE_ERROR,
     NON_BLOCKING_ERROR,
     CLIENT_WRITE_ERROR,
+    NTS
 };
 
 struct app {
