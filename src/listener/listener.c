@@ -40,31 +40,31 @@ static int create_socket(struct listener *l)
 
 static int read_loop(struct listener *l)
 {
-        char buffer[24];
-        ssize_t amount_read = 0;
-        if (!l) {
-                perror("No listener");
-                return NULL_PARAMETER;
-        }
-        while (1) {
-                // Always the same for a UNIX socket
-                amount_read = read(l->sd, buffer, sizeof(buffer));
-                if (errno == 3) {
-                        break;
-                }
-                if (amount_read < 0) {
-                        perror("Unable to read");
-                        return LISTENER_READ_FAIL;
-                }
-                buffer[amount_read] = '\0';
-                if (strcmp(buffer, "\07") == 0) {
-                        break;
-                }
-                if (strcmp(buffer, "") != 0) {
-                        printf("%s", buffer);
-                }
-        }
-        return SUCCESS;
+	ssize_t amount_read = 0;
+	if (!l) {
+			perror("No listener");
+			return NULL_PARAMETER;
+	}
+	while (1) {
+			char buffer[24];
+			// Always the same for a UNIX socket
+			amount_read = read(l->sd, buffer, sizeof(buffer));
+			if (errno == 3) {
+					break;
+			}
+			if (amount_read < 0) {
+					perror("Unable to read");
+					return LISTENER_READ_FAIL;
+			}
+			buffer[amount_read] = '\0';
+			if (strcmp(buffer, "\07") == 0) {
+					break;
+			}
+			if (strcmp(buffer, "") != 0) {
+					printf("%s", buffer);
+			}
+	}
+	return SUCCESS;
 }
 
 int main(int argc, char *argv[])
