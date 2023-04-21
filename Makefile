@@ -35,16 +35,16 @@ obj/%.o : src/%.c
 debug: CFLAGS += -g3
 debug: dispatcher listener
 
-CHECK_OBJS += test/test_all.o
+CHECK_OBJS += test/test-all.o test/test-sig.o src/signal_hdlr.o
 
 .PHONY: check
-check: test/test_all
-	./test/test_all
-test/test_all: CFLAGS += -g3
-test/test_all: LDFLAGS += -L.
-test/test_all: $(CHECK_OBJS)
-test/test_all: obj/common.o
-test/test_all: LDLIBS += -lcheck -lm -lrt -lpthread -lsubunit
+check: test/test-all
+	./test/test-all
+test/test-all: CFLAGS += -g3
+test/test-all: LDFLAGS += -L.
+test/test-all: $(CHECK_OBJS)
+#test/test-all: obj/common.o
+test/test-all: LDLIBS += -lcheck -lm -lrt -lpthread -lsubunit
 
 .PHONY: profile
 profile: CFLAGS += -pg
