@@ -1,6 +1,6 @@
 *.o
-listener
-dispatcher
+/listener
+/dispatcher
 .vscode/*
 *.txt
 test/test_all

@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
 
     err = start_client_loop(server->sd);
 
+
     err = destroy_server(server);
     if (err < 0) {
         return err;

@@ -36,6 +36,9 @@ void sig_handler(int signal, siginfo_t * info, void *context)
 		puts("SIGINT received");
         break_loop = false;
 		break;
+    case SIGPIPE:
+        puts("SIGPIPE received");
+        break;
 	case '?':
 		fprintf(stderr, "Something went wrong\n");
 	}
@@ -44,9 +47,9 @@ void sig_handler(int signal, siginfo_t * info, void *context)
 int set_signals(struct sigaction *action)
 {
 	enum {
-		SIGNAL_SZ = 4
+		SIGNAL_SZ = 5
 	};
-	int signals[SIGNAL_SZ] = { SIGHUP, SIGQUIT, SIGTERM, SIGINT };
+	int signals[SIGNAL_SZ] = { SIGHUP, SIGQUIT, SIGTERM, SIGINT, SIGPIPE };
 	int err;
 	for (int i = 0; i < SIGNAL_SZ; ++i) {
 		err = set_signal_catch(signals[i], *action);

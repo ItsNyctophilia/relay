@@ -3,6 +3,7 @@
 //
 #include "../common.h"
 #include "../signal_hdlr.h"
+#include "listener.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -11,52 +12,77 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
+#include <errno.h>
 
+
+static int create_socket(struct listener *l)
+{
+        if (!l) {
+                perror("No listener");
+                return NULL_PARAMETER;
+        }
+        // Always the same for a UNIX socket
+        l->sd = socket(AF_UNIX, SOCK_STREAM, 0);
+        if (l->sd < 0) {
+                perror("Unable to create socket");
+                return LISTENER_CREATE_FAIL;
+        }
+        l->endpoint.sun_family = AF_UNIX;
+        snprintf(l->endpoint.sun_path, sizeof(l->endpoint.sun_path), "/tmp/relay.sock");
+
+        l->err = connect(l->sd, (struct sockaddr *)&l->endpoint, sizeof(l->endpoint));
+        if (l->err < 0) {
+                perror("Unable to connect to endpoint");
+                return LISTENER_CONNECT_FAIL;
+        }
+        return SUCCESS;
+}
+
+static int read_loop(struct listener *l)
+{
+        char buffer[24];
+        ssize_t amount_read = 0;
+        if (!l) {
+                perror("No listener");
+                return NULL_PARAMETER;
+        }
+        while (1) {
+                // Always the same for a UNIX socket
+                amount_read = read(l->sd, buffer, sizeof(buffer));
+                if (errno == 3) {
+                        break;
+                }
+                if (amount_read < 0) {
+                        perror("Unable to read");
+                        return LISTENER_READ_FAIL;
+                }
+                buffer[amount_read] = '\0';
+                if (strcmp(buffer, "\07") == 0) {
+                        break;
+                }
+                if (strcmp(buffer, "") != 0) {
+                        printf("%s", buffer);
+                }
+        }
+        return SUCCESS;
+}
 
 int main(int argc, char *argv[])
 {
-	int err = 0;
-//	struct sigaction action = { 0 };
-//	action.sa_sigaction = sig_handler;
-//	err = set_signals(&action);
-//	if (err < 0) {
-//		exit(err);
-//	}
-
 	if (argc < 1) {
 		printf("Usage: ./%s\n", argv[0]);
 		return 1;
 	}
-
-        // Always the same for a UNIX socket
-        int sd = socket(AF_UNIX, SOCK_STREAM, 0);
-        if (sd < 0) {
-                perror("Unable to create socket");
-                return 1;
+        struct listener l = { 0 };
+        l.err = create_socket(&l);
+        if (l.err) {
+                return l.err;
+        }
+        l.err = read_loop(&l);
+        if (l.err) {
+                return l.err;
         }
 
-        struct sockaddr_un endpoint;
-        endpoint.sun_family = AF_UNIX;
-        snprintf(endpoint.sun_path, sizeof(endpoint.sun_path), "/tmp/relay.sock");
-
-         err = connect(sd, (struct sockaddr *)&endpoint, sizeof(endpoint));
-        if (err < 0) {
-                perror("Unable to connect to endpoint");
-                return 2;
-        }
-
-// 16 is plenty for a small message
-        char buffer[16];
-        ssize_t amount_read = read(sd, buffer, sizeof(buffer));
-        if (amount_read < 0) {
-                perror("Unable to read");
-                close(sd);
-                return 3;
-        }
-
-        buffer[amount_read] = '\0';
-        puts(buffer);
-
-        close(sd);
+        close(l.sd);
 
 }

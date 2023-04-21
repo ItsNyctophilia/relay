@@ -13,6 +13,16 @@
 #include <stdbool.h>
 
 extern bool break_loop;
+extern bool message_ready;
+extern char *buffer;
+
+enum {
+    CLIENT_SUCCESS,
+    CLIENT_CREATE_FAIL,
+    CLIENT_CONNECT_FAIL,
+    CLIENT_READ_FAIL
+};
+
 
 struct client_data {
 	int client_socket;
@@ -22,9 +32,16 @@ struct client_data {
 };
 
 struct thread_pool {
+    int sd;
 	thrd_t *threads;
 	size_t thrd_sz;
 	size_t thrd_cap;
+    int *thread_fds;
+};
+
+union thread_ptr {
+    void *ptr;
+    struct thread_pool *tp;
 };
 
 int start_client_loop(int sd);
