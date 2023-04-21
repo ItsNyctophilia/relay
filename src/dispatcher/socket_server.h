@@ -35,17 +35,20 @@ union socket_ptr {
     int sd;
 };
 
-struct socket_client {
-    int client_socket;
-    struct sockaddr_storage client_strg;
-    socklen_t client_sz;
-    union socket_ptr ptr;
-};
-
+/**
+ * @brief Create a server object
+ *
+ * @param err
+ * @return struct socket_server*
+ */
 struct socket_server *create_server(int *err);
 
-struct socket_client *create_client(int sd);
-
+/**
+ * @brief Destroy the server object
+ * Close the socket, free memory and unlink the socket file
+ * @param server
+ * @return int
+ */
 int destroy_server(struct socket_server *server);
 
 

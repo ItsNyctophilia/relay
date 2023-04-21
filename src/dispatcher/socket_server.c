@@ -62,17 +62,7 @@ struct socket_server *create_server(int *err)
     return server;
 }
 
-struct socket_client *create_client(int sd)
-{
-    struct socket_client *client = calloc(1, sizeof(*client));
-    if (client == NULL) {
-        perror("Failed to allocate memory for client");
-        return NULL;
-    }
-    client->client_sz = sizeof(client->client_strg);
-    client->client_socket = accept(sd, (struct sockaddr *)&client->client_strg, &client->client_sz);
-    return client;
-}
+
 
 int destroy_server(struct socket_server *server)
 {

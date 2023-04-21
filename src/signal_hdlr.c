@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
-ssize_t prime_idx = 0;
+bool break_loop = true;
 
 static int set_signal_catch(int signal, struct sigaction action)
 {
@@ -34,6 +34,7 @@ void sig_handler(int signal, siginfo_t * info, void *context)
 		break;
 	case SIGINT:
 		puts("SIGINT received");
+        break_loop = false;
 		break;
 	case '?':
 		fprintf(stderr, "Something went wrong\n");

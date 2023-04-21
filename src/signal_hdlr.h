@@ -7,6 +7,9 @@
 #include <stdint.h>
 #include <signal.h>
 #include <sys/types.h>
+#include <stdbool.h>
+
+extern bool break_loop;
 
 /**
  * @brief Configures and handles signals sent to program
