@@ -123,18 +123,9 @@ static int input_thread_func(void *arg)
         struct thread_pool *trds = trd.tp;
         //size_t sz = BUFSIZ;
         while (break_loop) {
-                //puts("Waiting for input");
-                //errno = 0;
-                //getline(&buffer, &sz, stdin);
-                //puts("Got input");
                 int result = poll(&input, 1,  500);
                 if (input.revents & POLLIN) {
                         puts("Input ready");
-//                        ssize_t amount = read(input.fd, buffer, BUFSIZ - 1);
-//                        if (amount < 0) {
-//                                perror("Unable to read from stdin");
-//                                return INPUT_READ_FAIL;
-//                        }
                         fgets(buffer, BUFSIZ - 1, stdin);
                         puts(buffer);
                         //buffer[amount] = '\0';
