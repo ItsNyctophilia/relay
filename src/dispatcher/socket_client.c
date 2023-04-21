@@ -112,8 +112,6 @@ int handle_client(void *handle)
 		close(client.sd);
 		return NON_BLOCKING_ERROR;
 	}
-	// More than enough to detect activity
-	//char buffer[15] = "MESSAGE";
 	while (break_loop) {
 
 	}
@@ -134,7 +132,9 @@ static int input_thread_func(void *arg)
 		if (result < 0) {
 			perror("Error received while polling");
 			return FAILURE;
-		}
+		} else if (result == 0) {
+                        continue;
+                }
 		if (input.revents & POLLIN) {
 			char *err = fgets(buffer, BUFSIZ - 1, stdin);
 			if (!err) {
@@ -150,9 +150,9 @@ static int input_thread_func(void *arg)
 				    write(trds->thread_fds[n], buffer,
 					  strlen(buffer));
 				if (amount < 0 && errno != EAGAIN) {
-					perror("Unable to read from client");
 					close(trds->thread_fds[n]);
-					return CLIENT_WRITE_ERROR;
+                                        trds->thrd_sz--;
+                                        continue;
 				}
 			}
 			mtx_unlock(&lock);
