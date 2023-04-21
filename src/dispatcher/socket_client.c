@@ -132,7 +132,7 @@ static int input_thread_func(void *arg)
         struct thread_pool *trds = trd.tp;
         struct pollfd input = { .fd = 0, .events = POLLIN };
         while (break_loop) {
-                int result = poll(&input, 1,  500);
+                poll(&input, 1,  500);
                 if (input.revents & POLLIN) {
                         fgets(buffer, BUFSIZ - 1, stdin);
                         mtx_lock(&lock);

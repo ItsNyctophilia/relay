@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 
 struct socket_server *create_server(int *err)
@@ -24,6 +25,7 @@ struct socket_server *create_server(int *err)
 
     server->pathname = calloc(sizeof(char), PATH_LEN);
     strcpy(server->pathname, "/tmp/relay.sock");
+    chmod(server->pathname, 0777);
 
     server->sd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (server->sd < 0) {
