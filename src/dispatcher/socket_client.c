@@ -87,12 +87,9 @@ int handle_client(void *handle)
 				break;
 			}
 		}
-
 	}
 
 	close(client.sd);
-
-	kill(getpid(), SIGQUIT);
 	return 0;
 }
 
@@ -100,7 +97,7 @@ int handle_client(void *handle)
 
 int start_client_loop(int sd)
 {
-	struct client_data c_data = { 0 };
+
 	struct thread_pool trds = { 0 };
 	int rtn = setup_threads(&trds);
 	if (rtn != SUCCESS) {
@@ -109,17 +106,21 @@ int start_client_loop(int sd)
 		return rtn;
 	}
 	while (break_loop) {
-
-		socklen_t client_sz = sizeof(c_data.client_strg);
-
-		int client_socket =
+            struct client_data c_data = { 0 };
+            c_data.client_sz = sizeof(c_data.client_strg);
+            c_data.client_socket =
 		    accept(sd, (struct sockaddr *)&c_data.client_strg,
-			   &client_sz);
+			   &c_data.client_sz);
+        if (c_data.client_socket < 0) {
+                perror("Unable to accept client");
+                cleanup_threads(&trds);
+                return FAILURE;
+        }
+		c_data.ptr.sd = c_data.client_socket;
 
-		union socket_ptr param = {.sd = client_socket };
 		int err =
 		    thrd_create(&trds.threads[trds.thrd_sz++], handle_client,
-				param.ptr);
+                        c_data.ptr.ptr);
 		if (err != SUCCESS) {
 			perror("Unable to create thread");
             cleanup_threads(&trds);
