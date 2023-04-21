@@ -24,23 +24,23 @@ void sig_handler(int signal, siginfo_t * info, void *context)
 	(void)context;
 	switch (signal) {
 	case SIGHUP:
-		puts("SIGHUP received");
+		// puts("SIGHUP received");
 		break;
 	case SIGQUIT:
-		puts("SIGQUIT received");
+		// puts("SIGQUIT received");
 		break;
 	case SIGTERM:
-		puts("SIGSTOP received");
+		// puts("SIGSTOP received");
 		break;
 	case SIGINT:
-		puts("SIGINT received");
+		// puts("SIGINT received");
         break_loop = false;
 		break;
     case SIGPIPE:
-        puts("SIGPIPE received");
+        // puts("SIGPIPE received");
         break;
 	case '?':
-		fprintf(stderr, "Something went wrong\n");
+		// fprintf(stderr, "Something went wrong\n");
 	}
 }
 
