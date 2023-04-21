@@ -71,10 +71,24 @@ int handle_client(void *handle)
 		return NON_BLOCKING_ERROR;
 	}
 	// More than enough to detect activity
-	char buffer[15] = "MESSAGE";
+	// char buffer[15] = "MESSAGE";
 	for (;;) {
+		char buffer[15];
+		char message[15];
+        ssize_t amount = read(STDIN_FILENO, buffer, sizeof(buffer) - 1);
+        if (amount < 0 && errno != EAGAIN) {
+            perror("Unable to read from user");
+        }
+        if (amount > 0) {
+            buffer[amount] = '\0';
+            int result = mtx_lock(&lock);
+            if (result == thrd_success) {
+                strncpy(message, buffer, sizeof(message));
+                mtx_unlock(&lock);
+            }
+        }
 		// Add space for NUL byte
-		ssize_t amount = write(client.sd, buffer, sizeof(buffer) - 1);
+		amount = write(client.sd, buffer, sizeof(buffer) - 1);
 		if (amount < 0 && errno != EAGAIN) {
 			perror("Unable to read from client");
 			close(client.sd);
