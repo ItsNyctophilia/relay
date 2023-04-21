@@ -11,16 +11,20 @@
 #include <unistd.h>
 #include <threads.h>
 #include <stdbool.h>
+#include <poll.h>
+#include <stdio.h>
 
 extern bool break_loop;
 extern bool message_ready;
-extern char *buffer;
+extern char buffer[BUFSIZ];
+extern struct pollfd input;
 
 enum {
     CLIENT_SUCCESS,
     CLIENT_CREATE_FAIL,
     CLIENT_CONNECT_FAIL,
-    CLIENT_READ_FAIL
+    CLIENT_READ_FAIL,
+    INPUT_READ_FAIL,
 };
 
 
