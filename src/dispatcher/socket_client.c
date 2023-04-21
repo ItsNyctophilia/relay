@@ -23,13 +23,13 @@ mtx_t lock;
 
 bool message_ready = false;
 char buffer[BUFSIZ];
+mtx_t lock;
 
 
 
 static void cleanup_threads(struct thread_pool *trds, thrd_t input, thrd_t conn) {
         for (size_t n = 0; n < trds->thrd_sz; ++n) {
                 if (trds->threads[n]) {
-
                         thrd_join(trds->threads[n], NULL);
                 }
         }
@@ -45,7 +45,14 @@ static void cleanup_threads(struct thread_pool *trds, thrd_t input, thrd_t conn)
         if (conn){
                 thrd_join(conn, NULL);
         }
-        //free(buffer);
+        for (size_t n = 0; n < trds->thrd_sz; ++n) {
+                if (trds->client_objs[n]) {
+                        if (trds->client_objs[n] != NULL){
+                                free(trds->client_objs[n]);
+                        }
+                }
+        }
+        free(trds->client_objs);
 }
 
 static struct client_data *create_client(int sd, int *rtn)
@@ -128,7 +135,11 @@ static int input_thread_func(void *arg)
                 int result = poll(&input, 1,  500);
                 if (input.revents & POLLIN) {
                         fgets(buffer, BUFSIZ - 1, stdin);
+                        mtx_lock(&lock);
                         for (size_t n = 0; n < trds->thrd_sz; ++n) {
+                                if (trds->thread_fds[n] == -1) {
+                                        continue;
+                                }
                                 ssize_t amount = write(trds->thread_fds[n], buffer, strlen(buffer));
                                 if (amount < 0 && errno != EAGAIN) {
                                         perror("Unable to read from client");
@@ -136,6 +147,7 @@ static int input_thread_func(void *arg)
                                         return CLIENT_WRITE_ERROR;
                                 }
                         }
+                        mtx_unlock(&lock);
                 }
         }
         return SUCCESS;
@@ -145,6 +157,7 @@ static int connection_thread_func(void *arg)
 {
         union thread_ptr trd = {.ptr = arg };
         struct thread_pool *trds = trd.tp;
+        trds->client_objs = malloc(1 * sizeof(*trds->client_objs));
         while (break_loop) {
                 int rtn;
                 struct client_data *c_data = create_client(trd.tp->sd, &rtn);
@@ -153,12 +166,19 @@ static int connection_thread_func(void *arg)
                         return CLIENT_CREATE_FAIL;
                 } else if (rtn == NTS){
                         continue;
-                }
+                } else if (rtn == CLIENT_SUCCESS) {
+                        // Add client to client array
+                        mtx_lock(&lock);
+                        trds->client_objs[trds->thrd_sz] = c_data;
+                        mtx_unlock(&lock);
+                        }
 
+                mtx_lock(&lock);
                 trds->thread_fds[trds->thrd_sz] = c_data->client_socket;
                 int err =
                         thrd_create(&trds->threads[trds->thrd_sz++], handle_client,
                         c_data->ptr.ptr);
+
 
                 if (err != SUCCESS) {
                         perror("Unable to create thread");
@@ -172,14 +192,18 @@ static int connection_thread_func(void *arg)
                         int *tmp2 =
                         realloc(trds->thread_fds,
                             2 * trds->thrd_cap * sizeof(*tmp2));
-                        if (!tmp || !tmp2) {
+                        struct client_data **tmp3 = realloc(trds->client_objs,
+                                       2 * trds->thrd_sz * sizeof(*tmp3));
+                        if (!tmp || !tmp2 || !tmp3) {
                                 perror("Cannot create more threads");
                                 break;
                         }
                         trds->threads = tmp;
                         trds->thread_fds = tmp2;
+                        trds->client_objs = tmp3;
                         trds->thrd_cap *= 2;
 		        }
+                mtx_unlock(&lock);
         }
         return SUCCESS;
 }
@@ -189,8 +213,9 @@ int start_client_loop(int sd)
 
         struct thread_pool trds = { 0 };
         trds.sd = sd;
-        trds.thread_fds = malloc(trds.thrd_cap * sizeof(*trds.thread_fds));
         int rtn = setup_threads(&trds);
+        trds.thread_fds = malloc(trds.thrd_cap * sizeof(*trds.thread_fds));
+
         int err = SUCCESS;
         if (rtn != SUCCESS) {
                 perror("Unable to setup threads");

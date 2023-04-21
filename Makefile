@@ -1,7 +1,7 @@
 CC= cc
 
 CFLAGS += -Wall -Wextra -Wpedantic -Waggregate-return
-CFLAGS += -Wvla -Wwrite-strings -Wfloat-equal
+CFLAGS += -Wvla -Wwrite-strings -Wfloat-equal -g3
 
 CPP_FLAGS += _XOPEN_SOURCE
 

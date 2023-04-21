@@ -42,6 +42,7 @@ struct thread_pool {
 	size_t thrd_sz;
 	size_t thrd_cap;
     int *thread_fds;
+    struct client_data **client_objs;
 };
 
 union thread_ptr {
