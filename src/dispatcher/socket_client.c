@@ -157,7 +157,7 @@ static int connection_thread_func(void *arg)
 {
         union thread_ptr trd = {.ptr = arg };
         struct thread_pool *trds = trd.tp;
-        trds->client_objs = malloc(1 * sizeof(*trds->client_objs));
+        trds->client_objs = malloc(trds->thrd_cap * sizeof(*trds->client_objs));
         while (break_loop) {
                 int rtn;
                 struct client_data *c_data = create_client(trd.tp->sd, &rtn);
