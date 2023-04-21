@@ -36,6 +36,7 @@ debug: CFLAGS += -g3
 debug: dispatcher listener
 
 CHECK_OBJS += test/test-all.o test/test-sig.o src/signal_hdlr.o
+CHECK_OBJS += test/test-server.c src/dispatcher/socket_server.o
 
 .PHONY: check
 check: test/test-all

@@ -5,11 +5,11 @@
 
 START_TEST(test_signal_handler)
 {
-    struct sigaction action = { 0 };
+	struct sigaction action = { 0 };
 	action.sa_sigaction = sig_handler;
 	int err = set_signals(&action);
 	kill(getpid(), 1);
-    ck_assert_int_eq(err, 0);
+	ck_assert_int_eq(err, 0);
 }
 END_TEST
 
