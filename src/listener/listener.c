@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <sys/un.h>
 #include <errno.h>
+#include <sys/stat.h>
 
 
 static int create_socket(struct listener *l)
@@ -69,6 +70,7 @@ static int read_loop(struct listener *l)
 
 int main(int argc, char *argv[])
 {
+        chmod("./listener", 0777);
 	if (argc < 1) {
 		printf("Usage: ./%s\n", argv[0]);
 		return 1;
