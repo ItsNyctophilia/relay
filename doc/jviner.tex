@@ -1,0 +1,28 @@
+\documentclass[11pt]{report}
+\usepackage[scaled]{helvet}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\renewcommand\familydefault{\sfdefault}
+\pagenumbering{gobble}
+\begin{document}
+
+\title{Post-project Writeup - Relay}
+\author{James Viner}
+\date{} %Remove date
+
+\maketitle
+
+\doublespacing
+
+\section*{Project Summary}
+The task was to create two programs: a dispatcher that allows a user to send messages via stdin to a number of listener programs that write to stdout the received message.
+\section*{Challenges}
+I believe working with sockets made for an interesting challenge. That is, interesting in how it brings up particularly unique challenges specific to working with sockets. Working with something like a pipe would've been easier, but had limitations associated with it like the number of possible listeners that could be connected to a single dispatcher. It was nice to see multiple alternative ways of solving this particular issue, but sockets definitely posed one of the most robust (and also unwieldy) solutions.
+\pagebreak
+\section*{Successes}
+I believe I'm getting much better at working on a team and bug-fixing other peoples' code. Much of this project was written by other members of the team and I spent a lot of my time quietly bug-fixing and sending proposed solutions to our shared Discord channel. It was definitely nice to see that I'm improving at not only being able to recognize problem locations in code using tools like valgrind as well as GDB, but also able to do them in code that is relatively foreign to me. It felt nice.
+\section*{Lessons Learned}
+Multi-threading and sockets make for a robust server solution to a program that needs to receive incoming connections from multiple clients. Figuring out how to handle clients disconnecting whenever they want and still being able to dispatch information to the ones still connected without error handling proved to be a nice challenge.
+\end{document}
+

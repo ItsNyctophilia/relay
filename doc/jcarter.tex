@@ -1,0 +1,24 @@
+\documentclass{article}
+
+\usepackage{hyperref}
+\usepackage{multicol}
+
+\title{Relay Writeup}
+\author{Jeremy Carter}
+\begin{document}
+  \maketitle
+    \section{Project Summary}
+    Write a pair of programs, a dispatcher and a listener, to act as a communication relay.
+    The program dispatcher passively accepts text from standard input, exiting normally on EOF.
+    The program listener will print out any text that was sent to a running instance of dispatcher. When dispatcher exits, so too does listener.
+
+    \section{Challenges}
+    Working with socket and multiple threads was way harder than I expected. Trying to send a message to all connected clients, while also waiting for new connections was tough. Luckily we had some great help from the instructor, otherwise we would have been suffering. Definitely showed me that I need to go over this topic some more on my own.
+
+    \section{Successes}
+    We managed to create a working program that meets the base requirement and some of the additional feature. We did not have time to fix some of the bugs we found, but overall I am happy with the program.
+
+    \section{Lessons Learned}
+    Need to go over multithreading, socket, and polling in  my free time.
+    Need to write better test cases. I did learn how to test signals on this project.
+\end{document}
