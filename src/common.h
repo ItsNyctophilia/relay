@@ -19,12 +19,14 @@ enum {
     THREAD_CREATE_ERROR,
     NON_BLOCKING_ERROR,
     CLIENT_WRITE_ERROR,
-    NTS
+    NTS,
+    CONN_LIMIT
 };
 
 struct app {
 	bool no_buffer;
 	long limit;
+    bool limit_set;
 	int clients;
 };
 
@@ -33,5 +35,7 @@ struct msg {
 	size_t size;
 	int code;
 };
+
+extern struct app app;
 
 #endif				//RELAY_D_COMMON_H

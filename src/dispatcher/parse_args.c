@@ -52,6 +52,7 @@ int parse_command_line(int argc, char **argv[], struct app *app)
 					print_help();
 					return FAILURE;
 				}
+                app->limit_set = true;
 			} else {
 				fprintf(stderr, "Limit value is missing!\n");
 				return FAILURE;

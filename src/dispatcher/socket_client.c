@@ -62,6 +62,7 @@ static struct client_data *create_client(int sd, int *rtn)
 		*rtn = NTS;
 		return NULL;
 	}
+
 	struct client_data *client = calloc(1, sizeof(*client));
 	if (client == NULL) {
 		perror("Failed to allocate memory for client");
@@ -73,13 +74,21 @@ static struct client_data *create_client(int sd, int *rtn)
 	client->client_socket =
 	    accept(sd, (struct sockaddr *)&client->client_strg,
 		   &client->client_sz);
-
+        if ( app.limit_set && (long) app.clients == app.limit){
+                write(client->client_socket, "Connection limit reached\n", 25);
+                //write(client->client_socket, "\07", 1);
+                close(client->client_socket);
+                free(client);
+                *rtn = CONN_LIMIT;
+                return NULL;
+        }
 	if (client->client_socket == -1) {
 		perror("Failed to accept client");
 		free(client);
 		return NULL;
 	}
 	client->ptr.sd = client->client_socket;
+    ++app.clients;
 	*rtn = CLIENT_SUCCESS;
 	return client;
 }
@@ -175,7 +184,10 @@ static int connection_thread_func(void *arg)
 			return CLIENT_CREATE_FAIL;
 		} else if (rtn == NTS) {
 			continue;
-		} else if (rtn == CLIENT_SUCCESS) {
+		} else if (rtn == CONN_LIMIT){
+            continue;
+        } else if (rtn == CLIENT_SUCCESS) {
+
 			// Add client to client array
 			mtx_lock(&lock);
 			trds->client_objs[trds->thrd_sz] = c_data;

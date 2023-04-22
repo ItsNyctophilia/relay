@@ -12,6 +12,8 @@
 #include <signal.h>
 #include <stdbool.h>
 
+struct app app = { 0 };
+
 int main(int argc, char *argv[])
 {
 	int err = 0;
@@ -22,7 +24,6 @@ int main(int argc, char *argv[])
 		exit(err);
 	}
 
-	struct app app = { 0 };
 	if (parse_command_line(argc, &argv, &app) == FAILURE) {
 		return FAILURE;
 	}
