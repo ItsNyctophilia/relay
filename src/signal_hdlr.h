@@ -1,6 +1,12 @@
-//
-// Created by user on 4/20/23.
-//
+/**
+ * @file signal_hdlr.h
+ * @brief 
+ * @version 0.1
+ * @date 2023-04-21
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 
 #ifndef RELAY_SIGNAL_HDLR_H
 #define RELAY_SIGNAL_HDLR_H

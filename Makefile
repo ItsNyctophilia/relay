@@ -53,4 +53,5 @@ profile: dispatcher listener
 
 .PHONY: clean
 clean:
-	$(RM) obj/* dispatcher listener test/*.o profile.a test/test_all test/*.o
+	$(RM) obj/* dispatcher listener test/*.o profile.a test/test_all test/*.o 
+	$(RM) src/dispatcher/*.o src/*.o

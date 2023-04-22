@@ -1,6 +1,12 @@
-//
-// Created by user on 4/20/23.
-//
+/**
+ * @file socket_server.h
+ * @brief 
+ * @version 0.1
+ * @date 2023-04-21
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 
 #ifndef RELAY_SOCKET_SERVER_H
 #define RELAY_SOCKET_SERVER_H
@@ -9,30 +15,29 @@
 #include <sys/un.h>
 #include <unistd.h>
 
-
 // Length of path plus null
 enum {
-    PATH_LEN = 17,
+	PATH_LEN = 17,
 };
 
 enum {
-    SVR_SUCCESS,
-    BIND_FAIL,
-    SOCKET_CREATE_FAIL,
-    LISTEN_FAIL,
-    UNLINK_FAIL,
+	SVR_SUCCESS,
+	BIND_FAIL,
+	SOCKET_CREATE_FAIL,
+	LISTEN_FAIL,
+	UNLINK_FAIL,
 };
 
 struct socket_server {
-    int sd;
-    char *pathname;
-    struct sockaddr_un endpoint;
-    int err;
+	int sd;
+	char *pathname;
+	struct sockaddr_un endpoint;
+	int err;
 };
 
 union socket_ptr {
-    void *ptr;
-    int sd;
+	void *ptr;
+	int sd;
 };
 
 /**
@@ -51,5 +56,4 @@ struct socket_server *create_server(int *err);
  */
 int destroy_server(struct socket_server *server);
 
-
-#endif //RELAY_SOCKET_SERVER_H
+#endif				//RELAY_SOCKET_SERVER_H

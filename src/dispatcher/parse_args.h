@@ -1,3 +1,12 @@
+/**
+ * @file parse_args.h
+ * @brief 
+ * @version 0.1
+ * @date 2023-04-21
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #ifndef RELAY_PARSE_ARGS_H
 #define RELAY_PARSE_ARGS_H
 #include "../common.h"
