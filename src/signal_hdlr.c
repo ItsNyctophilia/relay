@@ -40,7 +40,7 @@ void sig_handler(int signal, siginfo_t * info, void *context)
         // puts("SIGPIPE received");
         break;
 	case '?':
-		// fprintf(stderr, "Something went wrong\n");
+		fprintf(stderr, "Something went wrong\n");
 	}
 }
 
