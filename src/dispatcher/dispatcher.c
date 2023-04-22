@@ -27,19 +27,18 @@ int main(int argc, char *argv[])
 		return FAILURE;
 	}
 
-    int err_rtn = 0;
-    struct socket_server *server = create_server(&err_rtn);
-    if (err_rtn) {
-        destroy_server(server);
-        return err;
-    }
+	int err_rtn = 0;
+	struct socket_server *server = create_server(&err_rtn);
+	if (err_rtn) {
+		destroy_server(server);
+		return err;
+	}
 
-    err = start_client_loop(server->sd);
+	err = start_client_loop(server->sd, app.limit, app.limit_flag);
 
-
-    err = destroy_server(server);
-    if (err < 0) {
-        return err;
-    }
-    return SUCCESS;
+	err = destroy_server(server);
+	if (err < 0) {
+		return err;
+	}
+	return SUCCESS;
 }

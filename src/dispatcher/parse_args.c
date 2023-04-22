@@ -39,6 +39,7 @@ int parse_command_line(int argc, char **argv[], struct app *app)
 			if (optarg) {
 				char *endptr;
 				app->limit = strtol(optarg, &endptr, 10);
+				app->limit_flag = true;
 				if (*endptr != '\0') {
 					fprintf(stderr,
 						"Invalid limit value '%s', numerical required!\n",

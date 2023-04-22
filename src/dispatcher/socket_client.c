@@ -19,8 +19,9 @@
 #include <sys/un.h>
 #include <pthread.h>
 
-mtx_t lock;
-
+bool limit_flag;
+long connection_limit;
+int num_connections;
 bool message_ready = false;
 char buffer[BUFSIZ];
 mtx_t lock;
@@ -66,6 +67,7 @@ static struct client_data *create_client(int sd, int *rtn)
 	if (client == NULL) {
 		perror("Failed to allocate memory for client");
 		*rtn = MEMORY_ALLOCATION_ERROR;
+		free(client);
 		return NULL;
 	}
 	client->client_sz = sizeof(client->client_strg);
@@ -74,6 +76,13 @@ static struct client_data *create_client(int sd, int *rtn)
 	    accept(sd, (struct sockaddr *)&client->client_strg,
 		   &client->client_sz);
 
+	if (limit_flag && num_connections >= connection_limit) {
+		*rtn = MAX_CONNECTIONS;
+		perror("Maximum connections reached!");
+		free(client);
+		return NULL;
+	}
+
 	if (client->client_socket == -1) {
 		perror("Failed to accept client");
 		free(client);
@@ -81,6 +90,7 @@ static struct client_data *create_client(int sd, int *rtn)
 	}
 	client->ptr.sd = client->client_socket;
 	*rtn = CLIENT_SUCCESS;
+	num_connections++;
 	return client;
 }
 
@@ -133,8 +143,8 @@ static int input_thread_func(void *arg)
 			perror("Error received while polling");
 			return FAILURE;
 		} else if (result == 0) {
-                        continue;
-                }
+			continue;
+		}
 		if (input.revents & POLLIN) {
 			char *err = fgets(buffer, BUFSIZ - 1, stdin);
 			if (!err) {
@@ -151,8 +161,8 @@ static int input_thread_func(void *arg)
 					  strlen(buffer));
 				if (amount < 0 && errno != EAGAIN) {
 					close(trds->thread_fds[n]);
-                                        trds->thrd_sz--;
-                                        continue;
+					trds->thrd_sz--;
+					continue;
 				}
 			}
 			mtx_unlock(&lock);
@@ -170,8 +180,8 @@ static int connection_thread_func(void *arg)
 	while (break_loop) {
 		int rtn;
 		struct client_data *c_data = create_client(trd.tp->sd, &rtn);
-		if (rtn == MEMORY_ALLOCATION_ERROR) {
-			perror("Unable to create client!!");
+		if (rtn == MEMORY_ALLOCATION_ERROR || rtn == MAX_CONNECTIONS) {
+			perror("Unable to create client!");
 			return CLIENT_CREATE_FAIL;
 		} else if (rtn == NTS) {
 			continue;
@@ -216,9 +226,11 @@ static int connection_thread_func(void *arg)
 	return SUCCESS;
 }
 
-int start_client_loop(int sd)
+int start_client_loop(int sd, long limit, bool flag)
 {
 
+	connection_limit = limit;
+	limit_flag = flag;
 	struct thread_pool trds = { 0 };
 	trds.sd = sd;
 	int rtn = setup_threads(&trds);
