@@ -1,12 +1,12 @@
 CC= cc
 
 CFLAGS += -Wall -Wextra -Wpedantic -Waggregate-return
-CFLAGS += -Wvla -Wwrite-strings -Wfloat-equal
+CFLAGS += -Wvla -Wwrite-strings -Wfloat-equal -g3
 
 CPP_FLAGS += _XOPEN_SOURCE
 
 L_XTRA_OBJS +=
-D_XTRA_OBJS += obj/parse_args.o
+D_XTRA_OBJS += obj/parse_args.o obj/socket_server.o obj/socket_client.o
 CMN_OBJS = obj/signal_hdlr.o
 
 D_OBJS = obj/dispatcher.o $(D_XTRA_OBJS) $(CMN_OBJS)

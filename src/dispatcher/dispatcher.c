@@ -5,9 +5,12 @@
 #include "../common.h"
 #include "parse_args.h"
 #include "../signal_hdlr.h"
+#include "socket_client.h"
+#include "socket_server.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <stdbool.h>
 
 int main(int argc, char *argv[])
 {
@@ -23,4 +26,20 @@ int main(int argc, char *argv[])
 	if (parse_command_line(argc, &argv, &app) == FAILURE) {
 		return FAILURE;
 	}
+
+    int err_rtn = 0;
+    struct socket_server *server = create_server(&err_rtn);
+    if (err_rtn) {
+        destroy_server(server);
+        return err;
+    }
+
+    err = start_client_loop(server->sd);
+
+
+    err = destroy_server(server);
+    if (err < 0) {
+        return err;
+    }
+    return SUCCESS;
 }

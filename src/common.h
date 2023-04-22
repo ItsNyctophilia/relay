@@ -6,12 +6,20 @@
 #define RELAY_D_COMMON_H
 #include <stdbool.h>
 #include <stdio.h>
+#include <threads.h>
+#include <stdbool.h>
 
 enum {
 	SUCCESS,
 	FAILURE,
 	SIGNAL_SET_ERROR,
-	SIGNAL_CHANGE_ERROR
+	SIGNAL_CHANGE_ERROR,
+    NULL_PARAMETER,
+    MEMORY_ALLOCATION_ERROR,
+    THREAD_CREATE_ERROR,
+    NON_BLOCKING_ERROR,
+    CLIENT_WRITE_ERROR,
+    NTS
 };
 
 struct app {

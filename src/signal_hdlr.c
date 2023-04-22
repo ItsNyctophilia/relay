@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
-ssize_t prime_idx = 0;
+bool break_loop = true;
 
 static int set_signal_catch(int signal, struct sigaction action)
 {
@@ -24,28 +24,32 @@ void sig_handler(int signal, siginfo_t * info, void *context)
 	(void)context;
 	switch (signal) {
 	case SIGHUP:
-		puts("SIGHUP received");
+		// puts("SIGHUP received");
 		break;
 	case SIGQUIT:
-		puts("SIGQUIT received");
+		// puts("SIGQUIT received");
 		break;
 	case SIGTERM:
-		puts("SIGSTOP received");
+		// puts("SIGSTOP received");
 		break;
 	case SIGINT:
-		puts("SIGINT received");
+		// puts("SIGINT received");
+        break_loop = false;
 		break;
+    case SIGPIPE:
+        // puts("SIGPIPE received");
+        break;
 	case '?':
-		fprintf(stderr, "Something went wrong\n");
+		// fprintf(stderr, "Something went wrong\n");
 	}
 }
 
 int set_signals(struct sigaction *action)
 {
 	enum {
-		SIGNAL_SZ = 4
+		SIGNAL_SZ = 5
 	};
-	int signals[SIGNAL_SZ] = { SIGHUP, SIGQUIT, SIGTERM, SIGINT };
+	int signals[SIGNAL_SZ] = { SIGHUP, SIGQUIT, SIGTERM, SIGINT, SIGPIPE };
 	int err;
 	for (int i = 0; i < SIGNAL_SZ; ++i) {
 		err = set_signal_catch(signals[i], *action);
