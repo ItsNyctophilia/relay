@@ -1,6 +1,12 @@
-//
-// Created by user on 4/20/23.
-//
+/**
+ * @file socket_client.h
+ * @brief 
+ * @version 0.1
+ * @date 2023-04-21
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 
 #ifndef RELAY_SOCKET_CLIENT_H
 #define RELAY_SOCKET_CLIENT_H
@@ -20,14 +26,13 @@ extern char buffer[BUFSIZ];
 extern struct pollfd input;
 
 enum {
-    CLIENT_SUCCESS,
-    CLIENT_CREATE_FAIL,
-    CLIENT_CONNECT_FAIL,
-    CLIENT_READ_FAIL,
-    INPUT_READ_FAIL,
+	CLIENT_SUCCESS,
+	CLIENT_CREATE_FAIL,
+	CLIENT_CONNECT_FAIL,
+	CLIENT_READ_FAIL,
+	INPUT_READ_FAIL,
 
 };
-
 
 struct client_data {
 	int client_socket;
@@ -37,19 +42,25 @@ struct client_data {
 };
 
 struct thread_pool {
-    int sd;
+	int sd;
 	thrd_t *threads;
 	size_t thrd_sz;
 	size_t thrd_cap;
-    int *thread_fds;
-    struct client_data **client_objs;
+	int *thread_fds;
+	struct client_data **client_objs;
 };
 
 union thread_ptr {
-    void *ptr;
-    struct thread_pool *tp;
+	void *ptr;
+	struct thread_pool *tp;
 };
 
+/**
+ * @brief Start the client loop
+ *
+ * @param sd
+ * @return int
+ */
 int start_client_loop(int sd);
 
 #endif				//RELAY_SOCKET_CLIENT_H

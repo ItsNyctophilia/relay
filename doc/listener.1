@@ -1,0 +1,31 @@
+.TH Listener 1 "April 2023" "1.0" "listener man page"
+.SH NAME
+listener
+- will print out any text that was sent to a running instance of dispatcher.
+
+.SH SYNOPSIS
+listener
+
+.SH DESCRIPTION
+Will connect to the socket created by the dispatcher program if it exists. 
+Prints out any data sent to the running instance of the dispatcher.
+
+.SH RETURN VALUES
+listener returns the following values:
+
+.TP
+0
+The program executed successfully.
+.TP
+1
+An error occurred while creating the listener.
+.TP
+2
+An error occurred while connecting to the dispatcher socket.
+.TP
+3
+An error occurred while reading from the dispatcher socket.
+.PP
+
+.SH AUTHOR
+SPC James Viner, SPC Jeremy Carter, CW2 Richard Soto

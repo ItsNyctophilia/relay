@@ -1,0 +1,48 @@
+.TH Dispatcher 1 "April 2023" "1.0" "dispatcher man page"
+.SH NAME
+dispatcher
+- The program passively accepts text from standard input and sends it out to
+connected clients, exiting normally on EOF.
+
+.SH SYNOPSIS
+dispatcher
+.OP options
+
+.SH DESCRIPTION
+Dispatcher passively accepts text from standard input and sends it out to
+connected clients, exiting normally on EOF.
+
+.SH OPTIONS
+.TP
+.B -l limit
+Limit the amount of connections to the specified limit.
+
+.TP
+.B -h
+Show usage help.
+
+.SH RETURN VALUES
+dispatcher returns the following values:
+
+.TP
+0
+The program executed successfully.
+.TP
+1
+An error occurred while parsing the command-line arguments.
+.TP
+2
+An error occurred while opening or reading the configuration file.
+.TP
+3
+An error occurred while setting up the network socket.
+.TP
+4
+An error occurred while binding the network socket.
+.TP
+5
+An error occurred while setting the network socket to listen mode.
+.PP
+
+.SH AUTHOR
+SPC James Viner, SPC Jeremy Carter, CW2 Richard Soto
