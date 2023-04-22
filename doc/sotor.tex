@@ -9,26 +9,24 @@
   \maketitle
 
   \section{Project Summary}
+  Write a pair of programs, a dispatcher and a listener, to act as a communication relay.
+  The program dispatcher passively accepts text from standard input, exiting normally on EOF.
+  The program listener will print out any text that was sent to a running instance of dispatcher. When dispatcher exits, so too does listener.
 
-    \section{Project Summary}
-    Write a program that prints out increasing prime numbers, approximately one every second. The program will receive
-    signals from the operating system that will require actions to be taken within the application.
+  \section{Challenges}
+  Working across multiple threads that had their own threads was a new challenge for sure. I learned quite a bit about
+  to manage synchronization between threads, and polling. Without the instructors assistance this would have been a much more difficult task.
+  I am glad to have had the exposure as I am sure these topics will come up again.
 
-    \section{Challenges}
-    Working across multiple threads that had their own threads was a new challenge for sure. I learned quite a bit about
-    to manage synchronization between threads, and polling. Without the instructors assistance this would have been a much more difficult task.
-    I am glad to have had the exposure as I am sure tese topics will come up again.
+  \section{Successes}
+  Ultimately, the program was able to run as expected. With much trial and error, we were able to produce a working
+  product that met most of the requirements. We also did well with team members dealing with other issues mid project
+  and we were able to adjust accordingly.
 
-    \section{Successes}
-    Ultimately, the program was able to run as expected. With much trial and error, we were able to produce a working
-    product that met most of the requirements. We also did well with team members dealing with other issues mid project
-    and we were able to adjust accordingly.
-
-    \section{Lessons Learned}
-    Again, design was a big part of this project. We had to make sure that we were able to handle all of the edge cases.
-    If I could start over, I would have spent more time on the design and less time on the implementation. Specifically,
-    I would have tried to tie the destruction of a given thread to the destruction of the thread that spawned it. This would
-    have made the code much more readable and easier to understand, while being much more manageable.
-  \end{document}
-
+  \section{Lessons Learned}
+  Again, design was a big part of this project. We had to make sure that we were able to handle all of the edge cases.
+  If I could start over, I would have spent more time on the design and less time on the implementation. Specifically,
+  I would have tried to tie the destruction of a given thread to the destruction of the thread that spawned it. This would
+  have made the code much more readable and easier to understand, while being much more manageable.
 \end{document}
+
