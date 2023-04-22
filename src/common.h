@@ -30,7 +30,6 @@ enum {
 };
 
 struct app {
-	bool no_buffer;
 	long limit;
 	bool limit_set;
 	int clients;
