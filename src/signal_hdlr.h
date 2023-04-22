@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <stdbool.h>
+#include "common.h"
 
 extern bool break_loop;
 

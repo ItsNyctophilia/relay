@@ -58,7 +58,7 @@ static int read_loop(struct listener *l)
                         return LISTENER_READ_FAIL;
                 }
                 buffer[amount_read] = '\0';
-                if (strcmp(buffer, "\07") == 0) {
+                if (strcmp(buffer, "\07") == 0 || strcmp(buffer, "Connection limit reached\n") == 0) {
                         break;
                 }
                 if (strcmp(buffer, "") != 0) {
